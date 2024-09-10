@@ -1,25 +1,56 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Button } from './ui/button'
-import { SignInButton,SignedOut,SignedIn,UserButton } from '@clerk/clerk-react'
+import { SignInButton,SignedOut,SignedIn,UserButton, SignIn } from '@clerk/clerk-react'
+import { PenBox } from 'lucide-react'
 
 const Header = () => {
+ const [showSingIn,setShowSignIn] =useState(false);
+ const [search,setSearch] = useSearchParams();
+
+ useEffect(()=>{
+  if(search.get(`sign-in`)){
+    setShowSignIn(true) ;  /*this is used for whenever a use tries the route or give search  parameter sign-in a login pop up*/
+}
+ },[search] )
+ const handleOverlayClick=(e)=>{           /**this fucntion is created when we click on overlay of login it will disaapear */
+  if(e.target === e.currentTarget){     
+    setShowSignIn(false);
+    setSearch({});
+  }
+ }
   return (
     <>
     <nav className='py-4 flex justify-between items-center'>
         <Link>
         <img src='/logo.png' className='h-20'/>
         </Link>
-       {/* <Button variant="outline">Login</Button>*/}
+    <div className='flex gap-8'>
         <SignedOut>
-        <SignInButton />
+        <Button variant="outline" onClick={()=>setShowSignIn(true)}>Login</Button>
       </SignedOut>
+     
       <SignedIn>
+        {/*add a condietion here */}
+        <Link to="/post-job">
+        <Button variant='destructive' className='rounded-full'>
+        <PenBox size={20} className='mr-2'/>
+          Post a Job
+        </Button>
+        </Link>
         <UserButton />
       </SignedIn>
-   
+      </div>
     </nav>
-      Header
+
+{showSingIn && <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
+onClick={handleOverlayClick}>
+  <SignIn
+  signUpForceRedirectUrl='/onboarding'
+  fallbackRedirectUrl='/onboarding'/* this is checkinghere for condintion or giving  we used cleark   */
+  />
+  </div>}
+      
     </>
   )
 }

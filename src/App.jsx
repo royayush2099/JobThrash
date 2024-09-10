@@ -37,7 +37,7 @@ import { ThemeProvider } from './components/ui/theme-provider'
         element:<MyJobs/>
       },
       {
-        path:'/postjob',
+        path:'/post-job',
         element:<Postjob/>
       },
       {
